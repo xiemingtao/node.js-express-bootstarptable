@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/bootstrap-table.css" />
+    <link rel="stylesheet" href="./libs/datepickerZip/css/datepicker.css">
+    <link rel="stylesheet" href="./libs/datepickerZip/css/iconfont.css">
+  </head>
+  <style>
+    #table th{
+     text-align: center !important;
+    }
+    .bs-checkbox  {
+      text-align: center;
+      vertical-align: middle !important;
+    }
+  </style>
+  <body>
+    <table id="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th width="40px">序号</th>
+          <th>名称</th>
+          <th>种族</th>
+          <th>时间</th>
+          <th>类型</th>
+          <th>英雄出装</th>
+          <th>英雄定位</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+    </table>
+    <button type="button" class="btn btn-primary btn_add" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">添加</button>
+    <div class="modal fade" id="exampleModal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">New message</h4>
+            </div>
+            <div class="modal-body">
+              <form id="formData">
+                <div class="form-group">
+                  <label for="name" class="control-label">名称:</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="请添加名称">
+                </div>
+                <div class="form-group">
+                  <label for="race" class="control-label">种族:</label>
+                  <input class="form-control" id="race" name="race" placeholder="请添加英雄种族"></input>
+                </div>
+                <div class="form-group J-datepicker">
+                  <label for="datatime" class="control-label">时间:</label>
+                  <input type="text" autocomplete="off" name="datatime" placeholder="请选择日期" class="form-control " id="datatime">
+                </div>
+                <div class="form-group">
+                  <label for="type" class="control-label">类型:</label>
+                  <!-- <input class="form-control" id="type" name="type" placeholder="请添加你的评论" type="text" /> -->
+                  <select name="type" id="type" class="form-control" >
+                    <option value="power">力量</option>
+                    <option value="agile">敏捷</option>
+                    <option value="intelligence">智力</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="outfit" class="control-label">英雄出装:</label>
+                  <textarea type="text" autocomplete="off" name="outfit" placeholder="请添加英雄装备信息" class="form-control " id="outfit"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="location" class="control-label">英雄定位:</label>
+                  <textarea type="text" autocomplete="off" name="location" placeholder="请添加英雄定位" class="form-control " id="location"></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-primary " id="btnConfirm">确定</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">New message</h4>
+            </div>
+            <div class="modal-body">
+             <div>确定要删除此条信息吗？</div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button type="button" class="btn btn-primary btn_delConfirm">确定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </body>
+</html>
+<script src="./js/jquery.min.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<script src="./js/bootstrap-table.js"></script>
+<script src="./js/bootstrap-table-zh-CN.js"></script>
+<script src="./libs/datepickerZip/js/plugins/moment.min.js"></script>
+<script src="./libs/datepickerZip/js/datepicker.all.js"></script>
+<script>
+ $(function() {
+  function format(str) {
+    var year = str.getFullYear();
+    var month =
+      str.getMonth() + 1 > 9 ? str.getMonth() + 1 : "0" + (str.getMonth() + 1);
+    var date = str.getDate() > 9 ? str.getDate() : "0" + str.getDate();
+    var hours = str.getHours() > 9 ? str.getHours() : "0" + str.getHours();
+    var minutes =
+      str.getMinutes() > 9 ? str.getMinutes() : "0" + str.getMinutes();
+    var seconds =
+      str.getSeconds() > 9 ? str.getSeconds() : "0" + str.getSeconds();
+
+    return (
+      year +
+      "-" +
+      month +
+      "-" +
+      date +
+      " " +
+      hours +
+      ":" +
+      minutes +
+      ":" +
+      seconds
+    );
+  }
+  var indexId = ''
+  var pageIndex = 1
+  $("#table").bootstrapTable({
+    columns: [
+      {
+        field: "checkbox",
+        checkbox: true,
+        valign: "middle",
+        align: "center"
+      },
+      {
+        field: "index",
+        sortable: false,
+        valign: "middle",
+        align: "center",
+        formatter: function(a,b,index) {
+          return index +1 + ((pageIndex - 1) * 10)
+        }
+      },
+      {
+        field: "name",
+        sortable: true,
+        valign: "middle",
+        align: "center",
+        width: 90
+      },
+      {
+        field: "race",
+        sortable: true,
+        valign: "middle",
+        align: "center",
+        width: 90
+      },
+      {
+        field: "datatime",
+        sortable: true,
+        formatter: function(a) {
+          return format(new Date(a));
+        },
+        valign: "middle",
+        align: "center",
+        width: 150
+      },
+      {
+        field: "type",
+        sortable: true,
+        escape: false,
+        valign: "middle",
+        align: "center",
+        formatter:function(item) {
+          var type = item == 'power' ? '力量' : item == 'agile' ? '敏捷' : item == 'intelligence' ? '智力' : '未知'
+          return type
+        },
+        width: 80
+      },
+      {
+        field: "outfit",
+        sortable: true,
+        escape: false,
+        valign: "middle",
+        align: "left",
+        formatter:function(item) {
+         var outfit =  "<div title='" + item+"'>" + item+"</div>"
+         return outfit
+        }
+      },
+      {
+        field: "location",
+        sortable: true,
+        escape: false,
+        valign: "middle",
+        align: "left",
+      },
+      {
+        width: 150,
+        align: "center",
+        formatter:function(a,item) {
+          return "<div data-id=" +item.id +">" + 
+              "<button class='btn btn-info btn_edit'>编辑</button>"+
+             " <button class='btn btn-delete btn_del'>删除</button>"+
+            "</div>"
+        },
+        events: {
+          'click .btn_edit':function(a,b,item) {
+            $('#btnConfirm').addClass('btn_confirm').removeClass('btn_addConfirm')
+            
+            indexId = item.id
+            // if (item.checkbox) {
+              $('#exampleModal').modal('show')
+              $.ajax({
+                type: 'post',
+                url: 'http://localhost:8084/api/getUserId',
+                data: {
+                  id: item.id
+                },
+                success:function(result) {
+                  $('#name').val(result[0].name)
+                  $('#race').val(result[0].race)
+                  $('#datatime').val(format(new Date(result[0].datatime)))
+                  $('#type').val(result[0].type)
+                  $('#outfit').val(result[0].outfit)
+                  $('#location').val(result[0].location)
+                }
+              })
+          },
+          'click .btn_del' :function(a,b,item) {
+            indexId = item.id
+            $('#delModal').modal('show')
+          }
+        }
+      }
+    ],
+    sortOrder: "desc",
+    striped: true,
+    showRefresh: true,
+    showToggle: true,
+    showPaginationSwitch: true,
+    sortStable: true,
+    pageList: [],
+    pageSize: 10,
+    pagination: true,
+    search: true,
+    sortName: "id",
+    pageNumber: 1,
+    showJumpto: true,
+    method: 'post',
+    url: "http://localhost:8084/api/userlist",
+    sidePagination: "server",
+    onCheck: function(row,item) {
+      
+    },
+    onClickRow: function(row,item) {
+      
+    },
+    onPageChange: function(number, size) {
+      console.log(number);
+      pageIndex = number
+    }
+  });
+  $('.J-datepicker').datePicker();
+  $('.btn_delConfirm').click(function() {
+    $.ajax({
+      type: 'post',
+      url: 'http://localhost:8084/api/deleteUser',
+      data: {
+        id: indexId
+      },
+      success:function(){
+        $('#delModal').modal('hide')
+        $("#table").bootstrapTable('refresh')
+      }
+    })
+  })
+  $('.btn_add').click(function() {
+    $('#formData')[0].reset()
+    $('#btnConfirm').removeClass('btn_confirm').addClass('btn_addConfirm')
+    
+  })
+  $('#btnConfirm').on('click', function() {
+    if ($('#btnConfirm').hasClass('btn_addConfirm')) {
+      $.ajax({
+        url:"http://localhost:8084/api/insertUser",
+        data: $('#formData').serialize(),
+        type: 'post',
+        success: function(result) {
+          console.log(result);
+          $('#exampleModal').modal('hide')
+          $("#table").bootstrapTable('refresh')
+        }
+      })
+    } else if($('#btnConfirm').hasClass('btn_confirm')) {
+      $.ajax({
+        type: 'post',
+        url: 'http://localhost:8084/api/updateUser',
+        data: {
+          name: $('#name').val(),
+          race: $('#race').val(),
+          datatime: $('#datatime').val(),
+          type: $('#type').val(),
+          outfit: $('#outfit').val(),
+          location: $('#location').val(),
+          id: indexId
+        },
+        success:function(result) {
+          $('#exampleModal').modal('hide')
+          $("#table").bootstrapTable('refresh')
+        }
+      })
+    } else {
+      alert('操作错误，请重新操作')
+    }
+  })
+  
+ })
+</script>
