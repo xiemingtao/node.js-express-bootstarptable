@@ -1,7 +1,7 @@
-var express = require("express");
+let express = require("express");
 
-var router = express.Router();
-var handler = require('../handler/handler')
+let router = express.Router();
+let handler = require('../handler/handler')
 // 解决跨域中间件
 router.use("/", handler.getCors);
 // 查询接口

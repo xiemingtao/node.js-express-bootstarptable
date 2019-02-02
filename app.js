@@ -1,10 +1,10 @@
-var http = require('http')
+let http = require('http')
 
-var fs = require('fs')
-var app = http.createServer()
-var mime = require('mime')
-var path = require('path')
-app.on('request' ,function(req, res) {
+let fs = require('fs')
+let app = http.createServer()
+let mime = require('mime')
+let path = require('path')
+app.on('request' ,(req, res) =>{
   // res.setHeader('Content-Type', 'text/html')
   if (req.url == "/") {
     req.url = "index.html"
@@ -16,6 +16,6 @@ app.on('request' ,function(req, res) {
       })
 })
 
-app.listen('8080', function() {
+app.listen('8080', () => {
   console.log('http://localhost:8080');
 })
